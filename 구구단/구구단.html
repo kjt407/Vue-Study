@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>구구단</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="root">
+        <div>{{firstNum}}곱하기 {{secondNum}}는?</div>
+        <form action="" v-on:submit="onSubmitForm">
+            <input type="number" v-model="value" ref="answer">
+            <div>입력: {{value}}</div>
+            <button type="submit" >입력</button>
+            <div>결과: {{result}}</div>
+        </form>
+    </div>
+</body>
+
+<script>
+    const app = new Vue({
+        el: '#root',
+        data: {
+            firstNum: Math.ceil(Math.random()*9),
+            secondNum: Math.ceil(Math.random()*9),
+            value: '',
+            result: '',
+        },
+        methods: {
+            onSubmitForm(e){
+                e.preventDefault();
+                if (this.firstNum * this.secondNum === parseInt(this.value)){
+                    this.result = "정답",
+                    this.firstNum = Math.ceil(Math.random()*9),
+                    this.firstNum = Math.ceil(Math.random()*9),
+                    this.value = ''; //양방향 바인딩
+                }else {
+                    this.result = "틀림!"
+                }
+                this.$refs.answer.focus();
+            },
+        },
+    });
+</script>
+</html>
