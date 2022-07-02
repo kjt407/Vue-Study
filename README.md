@@ -2,7 +2,8 @@
 
 ## 목적
 
-Vue.js 학습을 통해 V-DOM을 사용하여 Model을 편리하게 렌더링 하고 클라이언트 자원을 효율적으로 활용하는 방법을 습득  
+Vue.js 학습을 통해 V-DOM을 사용하여 Model을 편리하게 렌더링 하고 클라이언트 자원을 효율적으로 활용하는 방법을 습득
+
 <br/>
 
 ## 0강 '좋아요 이벤트' (튜토리얼)
@@ -108,6 +109,8 @@ Vue.js 학습을 통해 V-DOM을 사용하여 Model을 편리하게 렌더링 �
     > 위와같이 data가 아닌 **요소를 직접 제어하여 값을 변경할 경우 새로 렌더링이 발생하지 않아 데이터와 뷰 간의 괴리**가 발생한다
   - mothods 에서는 'e'와 같은 이벤트 리스너를 사용 가능
 
+<br/>
+
 ## 끝말잇기
 
 - 끝말잇기 code
@@ -150,3 +153,117 @@ Vue.js 학습을 통해 V-DOM을 사용하여 Model을 편리하게 렌더링 �
   ```
 
   - 앞서 구구단 예제에서 학습한 내용으로 끝말잇기 구현
+
+<br/>
+
+## 컴포넌트
+
+- ### 하나의 페이지의 N개의 끝말잇기 요소를 추가한다고 가정해보자.
+
+  ### 중복된 참조를 피하기 위해서 N개만큼의 요소와 Vue 객체를 불러와야 할것이다
+
+   <br/>
+
+  ### **이러한 문제를 해결하기 위해 컴포넌트의 사용은 필수적**
+
+<br/>
+
+- 끝말잇기(컴포넌트) code
+
+  ```
+  <body>
+      <div id="root">
+          <word-relay start-word="첫번째"></word-relay>
+          <br/>
+          <word-relay start-word="두번째"></word-relay>
+          <br/>
+          <word-relay start-word="세번째"></word-relay>
+          <br/>
+      </div>
+  </body>
+
+  <script>
+      Vue.component('word-relay',{
+          template: `
+          <div>
+              <div>{{targetStr}}</div>
+              <form v-on:submit="onSubmit">
+                  <input type="text" v-model="inputValue" ref="inputRef">
+                  <button type="submit">입력</button>
+              </form>
+              <div>결과: {{result}}</div>
+          </div>
+          `,
+          props:['startWord'],
+          data() {
+              return{
+                  targetStr: this.startWord,
+                  inputValue: '',
+                  result: '',
+              }
+          },
+          methods: {
+              onSubmit(e){
+                  e.preventDefault();
+                  if( this.targetStr === '' || this.targetStr[this.targetStr.length - 1] === this.inputValue[0] ){
+                      this.result = '정답'
+                      this.targetStr = this.inputValue
+                  }else {
+                      this.result = '땡!'
+                  }
+                  this.inputValue = ''
+                  this.$refs.inputRef.focus();
+              },
+          },
+
+      });
+  </script>
+
+  <script>
+      const app = new Vue({
+          el: '#root',
+      });
+  </script>
+  ```
+
+  기존 끝말잇기 Vue 인스턴스를 컴포넌트로 분리 시켰다.  
+  이 과정을 통해 많은 것들을 학습 가능했다
+
+- Vue.Component
+
+  ```
+  Vue.component('word-relay',{
+        template: `
+        `,
+        props:[],
+        data() {
+            return{}
+        },
+        methods: {},
+        },
+    });
+  ```
+
+  기본적인 Component 구조이다
+
+  - template - 통해 컴포넌트 단위로 사용할 html 요소를 지정
+  - props - 컴포넌트 마다 각자의 특성을 다르게 하기위해 전달하는 값들의 모임(선언)
+  - data - 컴포넌트에서는 data를 반환하는 형식의 함수로 구성해야 한다. 이는 컴포넌트의 데이터의 중복없이 여러개를 사용하는 목적과 부합하는 부분이다
+
+- ### Rules & Tips
+
+  - template 속성은 반드시 최상단 한개의 요소로 묶여 있는 형태
+  - ``(백틱)을 사용하여 줄바꿈을 편리하게 표기 가능
+  - Vue는 Kebab-Case -> Camel-Case 자동 변환 지원
+
+    ```
+    //html attribute
+    <word-relay start-word="첫번째"></word-relay>
+
+    //vue.component
+    props:['startWord'],
+    ```
+
+    start-word -> startWord 자동 매핑된것 확인
+
+  - 위 예시는 전역 컴포넌트 생성 예
