@@ -267,4 +267,4 @@ Vue.js 학습을 통해 V-DOM을 사용하여 Model을 편리하게 렌더링 �
 
 webpack 기본설정 - 파일이 어떻게 합쳐지는가?
 main.js 에서의 import = package.json 에서 명시한 vue를 가져옴
-.vue 파일은 무었인가?
+.vue 파일은 무엇인가?
