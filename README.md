@@ -265,6 +265,106 @@ Vue.js 학습을 통해 V-DOM을 사용하여 Model을 편리하게 렌더링 �
 
   - 위 예시는 전역 컴포넌트 생성 예
 
+</br>
+
+## WebPack
+Vue와 같은 프론트엔드 라이브러리(프레임워크) 사용시  
+수많은 스크립트 파일을 관리할 수 밖에 없다. 이 과정에서 많은 문제가 발생하고, 프로젝트의 규모가 커질수록 문제는 심각해 진다.  
+WebPack과 같은 번들러 형태의 개발 구조의 장점과 사용법을 익혀보자.
+
+<br/>
+
+- ### 모듈이란 무엇인가?
+    - index.html
+        ```html
+        <body>
+            <h1>Hello, Webpack</h1>
+            <div id="root"></div>
+            <script type="module">
+                import hello_word from './source/hello.js';
+                import world_word from'./source/world.js';
+                document.querySelector('#root').innerHTML = hello_word+' '+world_word;
+            </script>
+        </body>
+        ```
+    - hello.js
+        ```javascript
+        var word = "Hello";
+        export default word;
+        ```
+    - world.js
+        ```javascript
+        var word = "world";
+        export default word;
+        ```
+    WebPack을 사용하지 않을때 사용하는 기본적인 모듈 구조이다.  
+    hello.js, world.js 모두 word 라는 변수를 가지고 있기 때문에 module 구조로 사용하지 않는다면 중복이 되어 문제가 발생한다.  
+      
+    > 웹팩은 이러한 모듈구조를 편리하게 사용하게 해줌과 더불어 필요한 파일들을 통합하여 Output 해준다는 장점이 있다
+    
+    </br>
+- WebPack 설치 후 코드 구성
+    - index.html
+        ```html
+        <body>
+            <h1>Hello, Webpack</h1>
+            <div id="root"></div>
+            <script src="./public/main.js"></script>
+        </body>
+        ```
+    - index.js
+        ```javascript
+        import hello_word from "./hello.js";
+        import world_word from "./world.js";
+        document.querySelector("#root").innerHTML = hello_word + " " + world_word;
+        ```
+    - hello.js
+        ```javascript
+        var word = "Hello";
+        export default word;
+        ```
+    - world.js
+        ```javascript
+        var word = "world";
+        export default word;
+        ```
+    - webpack 번들링 실행 명령어
+        ```cmd
+        npx webpack --entry ./source/index.js --output-path ./public/
+        ```
+    - 생성된 main.js 
+        ```javascript
+        (()=>{"use strict";document.querySelector("#root").innerHTML="Hello world"})();
+        ```
+    index.html 에서는 **WebPack 으로부터 생성된 main.js** 한개의 파일만 호출해서 사용하면 된다. 덕분에 **module, import와 같은 구형 브라우저에서 지원되지 않는 명령어**를 사용하지 않아도 되고, **한개의 파일만 서버에 요청**하여 부담을 줄일 수 있다.  
+
+    <br/>
+- webpack config 를 통한 설정
+    - webpack.config.js
+        ```javascript
+        const path = require("path");
+
+        module.exports = {
+        mode: "development",
+        entry: "./source/index.js",
+        output: {
+            path: path.resolve(__dirname, "public"),
+            filename: "main.js",
+        },
+        };
+        ```
+    - 번들링 실행 명령
+        ```
+        npx webpack --config webpack.config.js
+        ```
+    번들링에 필요한 정보들을 따로 파일을 만들어 유지하고,  
+    npx 명령을 통해 참조할 설정파일 정보를 넘겨준다.  
+    공식문서: [https://webpack.js.org/concepts/configuration/](https://webpack.js.org/concepts/configuration/)
+
+
+
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/>
 webpack 기본설정 - 파일이 어떻게 합쳐지는가?
 main.js 에서의 import = package.json 에서 명시한 vue를 가져옴
 .vue 파일은 무엇인가?
