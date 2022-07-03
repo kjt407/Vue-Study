@@ -10,7 +10,7 @@ Vue.js 학습을 통해 V-DOM을 사용하여 Model을 편리하게 렌더링 �
 ## 좋아요 이벤트 (튜토리얼)
 
 - CDN 사용을 위한 스크립트 주입
-  ```
+  ```html
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   ```
 - 데이터를 변경시 자동으로 **변경사항만 반영하여 렌더링**됨
@@ -21,7 +21,7 @@ Vue.js 학습을 통해 V-DOM을 사용하여 Model을 편리하게 렌더링 �
 
 - 좋아요 이벤트 code
 
-  ```
+  ```html
   <body>
       <div id="root">
           <div v-if="liked">좋아요 눌렀음</div>
@@ -61,7 +61,7 @@ Vue.js 학습을 통해 V-DOM을 사용하여 Model을 편리하게 렌더링 �
 
 - 구구단 code
 
-  ```
+  ```html
   <body>
     <div id="root">
         <div>{{firstNum}}곱하기 {{secondNum}}는?</div>
@@ -116,7 +116,7 @@ Vue.js 학습을 통해 V-DOM을 사용하여 Model을 편리하게 렌더링 �
 
 - 끝말잇기 code
 
-  ```
+  ```html
   <body>
     <div id="root">
         <div>{{targetStr}}</div>
@@ -167,7 +167,7 @@ Vue.js 학습을 통해 V-DOM을 사용하여 Model을 편리하게 렌더링 �
 
 - 끝말잇기(컴포넌트) code
 
-  ```
+  ```html
   <body>
       <div id="root">
           <word-relay start-word="첫번째"></word-relay>
@@ -228,7 +228,7 @@ Vue.js 학습을 통해 V-DOM을 사용하여 Model을 편리하게 렌더링 �
 
 - Vue.Component
 
-  ```
+  ```javascript
   Vue.component('word-relay',{
         template: `
         `,
@@ -253,7 +253,7 @@ Vue.js 학습을 통해 V-DOM을 사용하여 Model을 편리하게 렌더링 �
   - ``(백틱)을 사용하여 줄바꿈을 편리하게 표기 가능
   - Vue는 Kebab-Case -> Camel-Case 자동 변환 지원
 
-    ```
+    ```html
     //html attribute
     <word-relay start-word="첫번째"></word-relay>
 
