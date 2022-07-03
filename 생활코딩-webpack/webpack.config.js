@@ -1,12 +1,34 @@
-// 공식문서 예제 https://webpack.js.org/concepts/configuration/
-
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
 module.exports = {
   mode: "development",
-  entry: "./source/index.js",
+  entry: {
+    index: "./source/index.js",
+    about: "./source/about.js",
+  },
   output: {
     path: path.resolve(__dirname, "public"),
-    filename: "main.js",
+    filename: "[name].js",
   },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
+    ],
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: "./source/index.html",
+      filename: "index.html",
+      chunks: "index", //entry name
+    }),
+    new HtmlWebpackPlugin({
+      template: "./source/about.html",
+      filename: "about.html",
+      chunks: "about", //entry name
+    }),
+  ],
 };

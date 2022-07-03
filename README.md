@@ -336,7 +336,7 @@ WebPack과 같은 번들러 형태의 개발 구조의 장점과 사용법을 �
         ```javascript
         (()=>{"use strict";document.querySelector("#root").innerHTML="Hello world"})();
         ```
-    index.html 에서는 **WebPack 으로부터 생성된 main.js** 한개의 파일만 호출해서 사용하면 된다. 덕분에 **module, import와 같은 구형 브라우저에서 지원되지 않는 명령어**를 사용하지 않아도 되고, **한개의 파일만 서버에 요청**하여 부담을 줄일 수 있다.  
+    index.html 에서는 **WebPack 으로부터 생성된 main.js** 한개의 파일만 호출해서 사용하면 된다. 덕분에 **module, import와 같은 구형 브라우저에서 지원되지 않는 명령어**를 사용하지 않아도 되고, **한개의 파일만 서버에 요청**하여 부담을 줄일 수 있다.
 
     <br/>
 - webpack config 를 통한 설정
@@ -361,10 +361,142 @@ WebPack과 같은 번들러 형태의 개발 구조의 장점과 사용법을 �
     npx 명령을 통해 참조할 설정파일 정보를 넘겨준다.  
     공식문서: [https://webpack.js.org/concepts/configuration/](https://webpack.js.org/concepts/configuration/)
 
+</br>
 
+- 로더  
+    Webpack은 JS 파일 뿐만 아니라 스타일, 프레임워크, 파일 등등 여러가지 형식들을 번들링에 포함할 수 있다.  
+    - css 파일 로더에 등록하기
+        - index.html
+            ```html
+            <html>
+                <head>
+                    <!-- <link rel="stylesheet" href="./public/style.css"> -->
+                </head>
+                <body>
+                    <h1>Hello, Webpack</h1>
+                    <div id="root"></div>
+                    <script src="./public/main.js"></script>
+                </body>
+            </html>
+            ```
+        - webpack.config.js
+            ```javascript
+            const path = require("path");
+
+            module.exports = {
+            mode: "development",
+            entry: "./source/index.js",
+            output: {
+                path: path.resolve(__dirname, "public"),
+                filename: "main.js",
+            },
+            module: {
+                rules: [
+                {
+                    test: /\.css$/,
+                    use: ["style-loader", "css-loader"],
+                },
+                ],
+            },
+            };
+            ```
+        - index.html 에서 css 호출 부문을 주석 처리를 했지만 Webpack 로더 기능을 사용했기 때문에 스타일이 잘 적용되었다.  
+        - "css-loader"를 통해 css 파일을 번들링에 포함 시켰고, "style-loader"를 활용해 자동으로 html 파일에 스타일을 주입 시킬 수 있었다.
+        - rules.use 항목은 뒷 순서부터 불러온다(chain 형태)
+        - 공식문서: https://webpack.js.org/loaders/
+
+</br>
+
+- Output 설정  
+    여러가지 Output 파일을 번들링 하기위한 설정
+
+    - about.html, about.js 생성
+        - about.html
+            ```html
+            <html>
+                <body>
+                    <h1>Hello, Webpack</h1>
+                    <div id="root"></div>
+                    <script src="./public/about.js"></script>
+                    <a href="./index.html">index 이동</a>
+                </body>
+            </html>
+            ```
+        - about.js
+            ```javascript
+            import hello_word from "./hello.js";
+            import world_word from "./world.js";
+            import css from "./style.css";
+            document.querySelector("#root").innerHTML = world_word + " " + hello_word;
+            console.log("css", css);
+            ```
+        - webpack.config.js
+            ```javascript
+            module.exports = {
+            mode: "development",
+            entry: {
+                index: "./source/index.js",
+                about: "./source/about.js",
+            },
+            output: {
+                path: path.resolve(__dirname, "public"),
+                filename: "[name].js",
+            },
+            ```
+        - entry 항목을 객체 형태로 선언하여 다수의 엔트리를 설정 가능
+        - ouput 항목에서 [name] 템플릿을 활용하여 여러개의 entry를 번들링 가능
+        - 공식문서: https://webpack.js.org/output/
+
+</br>
+
+- Plugin  
+    WebPack을 사용하면 여러가지 확장 기능을 제공하는 Plugin을 쉽게 프로젝트에 적용하고 사용 가능하다.
+
+    - html-webpack-plugin 적용
+        - 플러그인 설치
+            ```
+            npm install --save-dev html-webpack-plugin
+            ```
+        - index.html, about.html 수정
+            ```html
+            <html>
+                <body>
+                    <h1>Hello, Webpack</h1>
+                    <div id="root"></div>
+                    <a href="./about.html">about 이동</a>
+                </body>
+            </html>
+            <!-- 번들링된 script를 추가하는 구문을 삭제 -->
+            ```
+        - webpack.config.js
+            ```javascript
+            const HtmlWebpackPlugin = require("html-webpack-plugin");
+
+
+            plugins: [
+                new HtmlWebpackPlugin({
+                template: "./source/index.html",
+                filename: "index.html",
+                chunks: "index", //entry name
+                }),
+                new HtmlWebpackPlugin({
+                template: "./source/about.html",
+                filename: "about.html",
+                chunks: "about", //entry name
+                }),
+            ],
+            ```
+        - 로더와 다르게 플러그인은 플러그인 객체를 생성하는 명령을 통해 주입한다.
+        - 인자를 통해 템플릿, 파일이름, 사용할 번들링된 entry 이름을 지정
+        - HtmlWebpackPlugin을 통해 번들링된 소스를 추가시킨 html을 자동으로 생성할 수 있게되었다.  
+
+<br/>
+WebPack 기본기 학습 끝.
+
+
+    
 
 
 <br/><br/><br/><br/><br/><br/><br/><br/><br/>
-webpack 기본설정 - 파일이 어떻게 합쳐지는가?
-main.js 에서의 import = package.json 에서 명시한 vue를 가져옴
-.vue 파일은 무엇인가?
+plugin 에는 플러그인의 객체를 삽입
+html 자동생성하고 번들링된 요소들을 자동으로 주입
